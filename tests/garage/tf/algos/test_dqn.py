@@ -55,7 +55,7 @@ class TestDQN(TfGraphTestCase):
                 n_epochs=n_epochs,
                 n_epoch_cycles=n_epoch_cycles,
                 batch_size=sampler_batch_size)
-            assert last_avg_ret > 20
+            assert last_avg_ret > 15
 
             env.close()
 
@@ -99,7 +99,7 @@ class TestDQN(TfGraphTestCase):
                 n_epochs=n_epochs,
                 n_epoch_cycles=n_epoch_cycles,
                 batch_size=sampler_batch_size)
-            assert last_avg_ret > 20
+            assert last_avg_ret > 15
 
             env.close()
 
@@ -144,6 +144,6 @@ class TestDQN(TfGraphTestCase):
                 n_epochs=n_epochs,
                 n_epoch_cycles=n_epoch_cycles,
                 batch_size=sampler_batch_size)
-            assert last_avg_ret > 20
+            assert last_avg_ret > 15
 
             env.close()
