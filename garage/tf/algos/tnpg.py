@@ -11,7 +11,14 @@ class TNPG(NPO):
 
     """
 
-    def __init__(self, optimizer=None, optimizer_args=None, **kwargs):
+    def __init__(self,
+                 env_spec,
+                 policy,
+                 baseline,
+                 max_path_length,
+                 discount,
+                 optimizer=None,
+                 optimizer_args=None):
         if optimizer is None:
             optimizer = ConjugateGradientOptimizer
             default_args = dict(max_backtracks=1)
@@ -20,7 +27,11 @@ class TNPG(NPO):
             else:
                 optimizer_args = dict(default_args, **optimizer_args)
         super().__init__(
+            env_spec=env_spec,
+            policy=policy,
+            baseline=baseline,
+            max_path_length=max_path_length,
+            discount=discount,
             optimizer=optimizer,
             optimizer_args=optimizer_args,
-            name='TNPG',
-            **kwargs)
+            name='TNPG')

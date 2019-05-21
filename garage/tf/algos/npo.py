@@ -33,29 +33,42 @@ class NPO(BatchPolopt):
     """
     Natural Policy Gradient Optimization.
 
-    Attributes:
+    Args:
+        env_spec (garage.envs.EnvSpec): Environment specification.
+        policy (garage.tf.policies.base.Policy): Policy.
+        baseline (garage.tf.baselines.Baseline): The baseline.
+        max_path_length (int): Maximum length of a single rollout.
+        discount (float): Discount.
+        gae_lambda (float): Lambda used for generalized advantage
+            estimation.
         name(str): The name of the algorithm.
         lr_clip_range(float): The limit on the likelihood ratio between
             policies, as in PPO.
         max_kl_step(float): The maximum KL divergence between old and new
             policies, as in TRPO.
         policy_ent_coeff(float): The coefficient of the policy entropy.
-        optimizer(float): The optimizer of the algorithm.
+        optimizer(Serializable):
+            The optimizer of the algorithm.
     """
 
     def __init__(self,
+                 env_spec,
+                 policy,
+                 baseline,
+                 max_path_length=500,
+                 discount=0.99,
+                 gae_lambda=1,
                  pg_loss=PGLoss.SURROGATE,
+                 positive_adv=False,
                  lr_clip_range=0.01,
                  max_kl_step=0.01,
                  optimizer=None,
                  optimizer_args=None,
                  name='NPO',
-                 policy=None,
                  policy_ent_coeff=0.0,
                  use_softplus_entropy=False,
                  use_neg_logli_entropy=False,
-                 stop_entropy_gradient=False,
-                 **kwargs):
+                 stop_entropy_gradient=False):
         self.name = name
         self._name_scope = tf.name_scope(self.name)
         self._use_softplus_entropy = use_softplus_entropy
@@ -74,7 +87,14 @@ class NPO(BatchPolopt):
             self.max_kl_step = float(max_kl_step)
             self.policy_ent_coeff = float(policy_ent_coeff)
 
-        super().__init__(policy=policy, **kwargs)
+        super().__init__(
+            env_spec=env_spec,
+            policy=policy,
+            baseline=baseline,
+            max_path_length=max_path_length,
+            discount=discount,
+            gae_lambda=gae_lambda,
+            positive_adv=positive_adv)
 
     @overrides
     def init_opt(self):

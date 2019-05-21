@@ -8,7 +8,15 @@ class VPG(NPO):
     Vanilla Policy Gradient.
     """
 
-    def __init__(self, optimizer=None, optimizer_args=None, **kwargs):
+    def __init__(self,
+                 env_spec,
+                 policy,
+                 baseline,
+                 max_path_length,
+                 discount,
+                 positive_adv=True,
+                 optimizer=None,
+                 optimizer_args=None):
         if optimizer is None:
             default_args = dict(
                 batch_size=None,
@@ -20,8 +28,13 @@ class VPG(NPO):
             else:
                 optimizer_args = dict(default_args, **optimizer_args)
         super(VPG, self).__init__(
+            env_spec=env_spec,
+            policy=policy,
+            baseline=baseline,
+            max_path_length=max_path_length,
+            discount=discount,
             pg_loss=PGLoss.VANILLA,
+            positive_adv=positive_adv,
             optimizer=optimizer,
             optimizer_args=optimizer_args,
-            name='VPG',
-            **kwargs)
+            name='VPG')

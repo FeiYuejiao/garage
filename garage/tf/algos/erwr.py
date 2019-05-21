@@ -24,16 +24,24 @@ class ERWR(VPG):
     """
 
     def __init__(self,
+                 env_spec,
+                 policy,
+                 baseline,
+                 max_path_length,
+                 discount,
                  optimizer=None,
                  optimizer_args=None,
-                 positive_adv=True,
-                 **kwargs):
+                 positive_adv=True):
         if optimizer is None:
             optimizer = LbfgsOptimizer
             if optimizer_args is None:
                 optimizer_args = dict()
         super(ERWR, self).__init__(
+            env_spec=env_spec,
+            policy=policy,
+            baseline=baseline,
+            max_path_length=max_path_length,
+            discount=discount,
             optimizer=optimizer,
             optimizer_args=optimizer_args,
-            positive_adv=positive_adv,
-            **kwargs)
+            positive_adv=positive_adv)

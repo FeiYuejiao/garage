@@ -21,10 +21,17 @@ class TRPO(NPO):
     """
 
     def __init__(self,
+                 env_spec,
+                 policy,
+                 baseline,
+                 max_path_length,
+                 discount,
+                 gae_lambda=0.98,
+                 policy_ent_coeff=0.0,
+                 max_kl_step=0.01,
                  kl_constraint=KLConstraint.HARD,
                  optimizer=None,
-                 optimizer_args=None,
-                 **kwargs):
+                 optimizer_args=None):
 
         if not optimizer:
             if kl_constraint == KLConstraint.HARD:
@@ -38,8 +45,15 @@ class TRPO(NPO):
             optimizer_args = dict()
 
         super(TRPO, self).__init__(
+            env_spec=env_spec,
+            policy=policy,
+            baseline=baseline,
+            max_path_length=max_path_length,
+            discount=discount,
+            gae_lambda=gae_lambda,
             pg_loss=PGLoss.SURROGATE,
             optimizer=optimizer,
             optimizer_args=optimizer_args,
-            name='TRPO',
-            **kwargs)
+            policy_ent_coeff=policy_ent_coeff,
+            max_kl_step=max_kl_step,
+            name='TRPO')

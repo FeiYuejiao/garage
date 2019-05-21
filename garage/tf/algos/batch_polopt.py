@@ -44,8 +44,7 @@ class BatchPolopt(RLAlgorithm):
                  gae_lambda=1,
                  center_adv=True,
                  positive_adv=False,
-                 fixed_horizon=False,
-                 **kwargs):
+                 fixed_horizon=False):
         self.env_spec = env_spec
         self.policy = policy
         self.baseline = baseline

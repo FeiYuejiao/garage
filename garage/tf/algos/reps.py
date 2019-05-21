@@ -40,6 +40,11 @@ class REPS(BatchPolopt):
     """
 
     def __init__(self,
+                 env_spec,
+                 policy,
+                 baseline,
+                 max_path_length,
+                 discount,
                  epsilon=0.5,
                  l2_reg_dual=0.,
                  l2_reg_loss=0.,
@@ -47,8 +52,7 @@ class REPS(BatchPolopt):
                  optimizer_args=dict(max_opt_itr=50),
                  dual_optimizer=scipy.optimize.fmin_l_bfgs_b,
                  dual_optimizer_args=dict(maxiter=50),
-                 name='REPS',
-                 **kwargs):
+                 name='REPS'):
         self.name = name
         self._name_scope = tf.name_scope(self.name)
 
@@ -60,7 +64,12 @@ class REPS(BatchPolopt):
             self.l2_reg_dual = float(l2_reg_dual)
             self.l2_reg_loss = float(l2_reg_loss)
 
-        super().__init__(**kwargs)
+        super(REPS, self).__init__(
+            env_spec=env_spec,
+            policy=policy,
+            baseline=baseline,
+            max_path_length=max_path_length,
+            discount=discount)
 
     @overrides
     def init_opt(self):
