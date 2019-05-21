@@ -35,6 +35,7 @@ from garage.replay_buffer import SimpleReplayBuffer
 from garage.tf.algos import DDPG
 from garage.tf.envs import TfEnv
 from garage.tf.policies import ContinuousMLPPolicy
+from garage.tf.policies import ContinuousMLPPolicyWithModel
 from garage.tf.q_functions import ContinuousMLPQFunction
 import tests.helpers as Rh
 from tests.wrappers import AutoStopEnv
@@ -45,7 +46,7 @@ params = {
     'qf_lr': 1e-3,
     'policy_hidden_sizes': [64, 64],
     'qf_hidden_sizes': [64, 64],
-    'n_epochs': 500,
+    'n_epochs': 250,
     'n_epoch_cycles': 20,
     'n_rollout_steps': 100,
     'n_train_steps': 50,
@@ -75,10 +76,14 @@ class TestBenchmarkDDPG(unittest.TestCase):
         result_json = {}
         for task in mujoco1m['tasks']:
             env_id = task['env_id']
+            task['trials'] = 10
+            if (env_id != 'InvertedPendulum-v2'):
+                continue
             env = gym.make(env_id)
             baseline_env = AutoStopEnv(
                 env_name=env_id, max_path_length=params['n_rollout_steps'])
             seeds = random.sample(range(100), task['trials'])
+            seeds = [69 for i in range(10)]
 
             task_dir = osp.join(benchmark_dir, env_id)
             plt_file = osp.join(benchmark_dir,
@@ -101,11 +106,11 @@ class TestBenchmarkDDPG(unittest.TestCase):
                     garage_csv = run_garage(env, seed, garage_dir)
 
                     # Run baselines algorithms
-                    baselines_csv = run_baselines(baseline_env, seed,
-                                                  baselines_dir)
+                    # baselines_csv = run_baselines(baseline_env, seed,
+                                                  # baselines_dir)
 
-                garage_csvs.append(garage_csv)
-                baselines_csvs.append(baselines_csv)
+                # garage_csvs.append(garage_csv)
+                # baselines_csvs.append(baselines_csv)
 
             env.close()
 
@@ -158,7 +163,7 @@ def run_garage(env, seed, log_dir):
         # Set up params for ddpg
         action_noise = OUStrategy(env.spec, sigma=params['sigma'])
 
-        policy = ContinuousMLPPolicy(
+        policy = ContinuousMLPPolicyWithModel(
             env_spec=env.spec,
             hidden_sizes=params['policy_hidden_sizes'],
             hidden_nonlinearity=tf.nn.relu,

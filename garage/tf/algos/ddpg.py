@@ -138,7 +138,6 @@ class DDPG(OffPolicyRLAlgorithm):
                     tf.float32,
                     shape=(None, self.env_spec.action_space.flat_dim),
                     name='input_action')
-                actions = self._scale_action(actions)
 
             # Set up policy training function
             next_action = self.policy.get_action_sym(obs, name='policy_action')
